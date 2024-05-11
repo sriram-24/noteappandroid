@@ -30,7 +30,7 @@ class NoteViewModel(private val repository: NoteRepository) : ViewModel() {
 }
 
 class NoteViewModelFactory(private var repository: NoteRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(NoteViewModel::class.java)){
            return NoteViewModel(repository) as T
         }
