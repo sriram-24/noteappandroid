@@ -29,9 +29,10 @@ import com.example.noteappandroid.viewModel.NoteViewModel
 import com.example.noteappandroid.viewModel.NoteViewModelFactory
 
 class MainActivity : AppCompatActivity() {
-    lateinit var noteViewModel: NoteViewModel
-    lateinit var addActivityResultLauncher: ActivityResultLauncher<Intent>
-    lateinit var noteAdapter :NoteAdapter
+    private lateinit var noteViewModel: NoteViewModel
+    private lateinit var addActivityResultLauncher: ActivityResultLauncher<Intent>
+    lateinit var updateActivityResultLauncher: ActivityResultLauncher<Intent>
+    private lateinit var noteAdapter :NoteAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerView : RecyclerView = findViewById(R.id.recyclerViewCard)
         recyclerView.layoutManager = LinearLayoutManager(this)
-        noteAdapter = NoteAdapter()
+        noteAdapter = NoteAdapter(this)
         recyclerView.adapter = noteAdapter
 
         val viewModelFactory = NoteViewModelFactory((application as NoteApplication).repository)
@@ -51,7 +52,10 @@ class MainActivity : AppCompatActivity() {
             noteAdapter.setNotes(notes)
 
         })
+
+//        register activity launchers
         registerResultActivityLauncher()
+        registerUpdateResultActivityLauncher()
 
         ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0,ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT){
             override fun onMove(
@@ -99,6 +103,30 @@ class MainActivity : AppCompatActivity() {
                     )
                     println("NoteOut : ${note}")
                     noteViewModel.insert(note)
+                }
+
+            })
+    }
+    private fun registerUpdateResultActivityLauncher(){
+        updateActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult(),
+            ActivityResultCallback {resultAddNote ->
+                val resultCode = resultAddNote.resultCode
+                val resultData = resultAddNote.data
+                println("updateresultCode : ${resultCode}")
+                println("updateresultData : ${resultData}")
+                if (resultCode == RESULT_OK && resultData !=null){
+                    val updatedTitle : String = resultData.getStringExtra("updatedTitle").toString()
+                    val updatedDescription : String = resultData.getStringExtra("updatedDescription").toString()
+                    val noteId : Int = resultData.getIntExtra("noteId",-1)
+
+                    val newNote = Note(
+                        updatedTitle,
+                        updatedDescription
+                    )
+                    newNote.id = noteId
+                    println("updatedNote : $newNote")
+                    noteViewModel.update(newNote)
+
                 }
 
             })

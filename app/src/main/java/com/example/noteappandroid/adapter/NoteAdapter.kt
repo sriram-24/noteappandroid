@@ -1,5 +1,6 @@
 package com.example.noteappandroid.adapter
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,8 +9,10 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.noteappandroid.R
 import com.example.noteappandroid.model.Note
+import com.example.noteappandroid.view.MainActivity
+import com.example.noteappandroid.view.UpdateActivity
 
-class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
+class NoteAdapter(private val activity: MainActivity) : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
 
     private var notes : List<Note> = ArrayList<Note>()
 
@@ -35,6 +38,14 @@ class NoteAdapter : RecyclerView.Adapter<NoteAdapter.NoteViewHolder>() {
         var currentNote : com.example.noteappandroid.model.Note = notes[position]
         holder.textViewTitle.text = currentNote.title
         holder.textViewDescription.text = currentNote.description
+        holder.cardView.setOnClickListener{
+            val intent = Intent(activity,UpdateActivity::class.java)
+            intent.putExtra("currentTitle",currentNote.title)
+            intent.putExtra("currentDescription",currentNote.description)
+            intent.putExtra("noteId",currentNote.id)
+            println("intentLaunchupdate")
+            activity.updateActivityResultLauncher.launch(intent)
+        }
 
     }
 

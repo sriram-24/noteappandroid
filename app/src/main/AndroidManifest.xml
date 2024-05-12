@@ -14,9 +14,13 @@
         android:theme="@style/Theme.Noteappandroid"
         tools:targetApi="31">
         <activity
+            android:name=".view.UpdateActivity"
+            android:parentActivityName=".view.MainActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.NoteAddActivity"
             android:exported="false"
-            android:parentActivityName=".view.MainActivity"/>
+            android:parentActivityName=".view.MainActivity" />
         <activity
             android:name=".view.MainActivity"
             android:exported="true">
